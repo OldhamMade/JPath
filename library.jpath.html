@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>Test Page for JPath</title>
+<link rel="stylesheet" type="text/css" href="jsspec/JSSpec.css" />
+<script type="text/javascript" src="jsspec/diff_match_patch.js"></script>
+<script type="text/javascript" src="jsspec/JSSpec.js"></script>
+<script language="javascript" src="util/jpath.js"></script>
+<script language="javascript">
+
+  var
+    data = {
+      'info': {
+        'str': 'this is a string',
+        'arr': ['this','is','an','array'],
+        'nullitem': null,
+        'emptyarr': [],
+        'x': 1,
+        'y': 'is',
+        'num': 123.45,
+        n: {
+          e: {
+            s: {
+              t: {
+                e: {
+                  d: true
+                }
+              }
+            }
+          }
+        }
+      },
+      'counter':{
+        a: 1,
+        b: 1,
+        c: 1,
+        d: 1,
+        e: 1
+      },
+      str: "another string"
+    },
+    jpath = new JPath(data);
+
+  jpath.debug = true;
+
+  describe('Direct Access', {
+    'direct path query': function(){
+      value_of(jpath.query('info/str')).should_be('this is a string');
+    },
+    'complete tree traversal': function(){
+      value_of(jpath.query('*/str')).should_be("this is a string");
+    },
+    'deeply nested query': function(){
+      value_of(jpath.query('info/n/e/s/t/e/d')).should_be(true);
+    },
+  });
+
+
+  describe('Numerical Queries', {
+    'matching a number': function(){
+      value_of(jpath.query('*[x = 1]/str')).should_be('this is a string');
+    },
+    'matching a float': function(){
+      value_of(jpath.query('*[num = 123.45]/str')).should_be('this is a string');
+    },
+    'multiple `where`s': function(){
+      value_of(jpath.query('*[num = 123.45][x = 1]/str')).should_be('this is a string');
+    },
+  });
+
+
+  describe('Operator Queries', {
+    'greater-than': function(){
+      value_of(jpath.query('*[num > 0]/str')).should_be('this is a string');
+    },
+    'less-than': function(){
+      value_of(jpath.query('*[num < 1000]/str')).should_be('this is a string');
+    },
+    '... or ...': function(){
+      value_of(jpath.query('*[num = 123.45 or num = 0]/str')).should_be('this is a string');
+    },
+    'is null': function(){
+      value_of(jpath.query('*[nullitem is null]/str')).should_be('this is a string');
+    },
+    'is not null': function(){
+      value_of(jpath.query('*[str is not null]/str')).should_be('this is a string');
+    },
+    'exists with existing key': function(){
+      value_of(jpath.query('*[str]/str')).should_be('this is a string');
+    },
+    'exists with non-existant key': function(){
+      value_of(jpath.query('*[foobar]/str')).should_not_be('this is a string');
+    },
+    'exists with existing key, null value': function(){
+      value_of(jpath.query('*[exists(nullitem)]/str')).should_be('this is a string');
+    },
+    'exists method with non-existant key': function(){
+      value_of(jpath.query('*[exists(foobar)]/str')).should_not_be('this is a string');
+    },
+  });
+
+
+  describe('Regular Expressions', {
+    'accessing a child value from a regex': function(){
+      value_of(jpath.query('*[matches(str, "string$")]/str')).should_be("this is a string");
+    }
+  });
+
+
+  describe('String-value Queries', {
+    'starts-with': function(){
+      value_of(jpath.query('*[starts-with(str, "this i")]/str')).should_be('this is a string');
+    },
+    'ends-with': function(){
+      value_of(jpath.query('*[ends-with(str, "a string")]/str')).should_be('this is a string');
+    }
+  });
+
+
+  describe('Array-based Queries', {
+    'in-array using a list of numbers': function(){
+      value_of(jpath.query('*[x in (1,2,3)]/str')).should_be('this is a string');
+    },
+    'in-array using a list of strings': function(){
+      value_of(jpath.query('*[str in ("this","this is a string","is a string")]/str')).should_be('this is a string');
+    },
+    'in-array using a stored list': function(){
+      value_of(jpath.query('*[arr has "is"]/str')).should_be('this is a string');
+    },
+    'in-array using a stored list and value': function(){
+      value_of(jpath.query('*[arr has y]/str')).should_be('this is a string');
+    },
+    '`empty` test on empty array': function(){
+      value_of(jpath.query('*[emptyarr is empty]/str')).should_be('this is a string');
+    },
+    'not `empty` test on a non-empty array': function(){
+      value_of(jpath.query('*[arr is not empty]/str')).should_be('this is a string');
+    },
+  });
+
+</script>
+</head>
+<body>
+<div style="display:none;"><p>A</p><p>B</p></div>
+</body>
+</html>
