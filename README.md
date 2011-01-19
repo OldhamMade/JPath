@@ -41,18 +41,18 @@ From the original library:
 
 Additional syntax:
 
-**is null:** `nodename[is null]`
-**is not null:** `nodename[is not null]`
-**exists():** `nodename[exists(nodename)]`
-**matches():** `nodename[matches(nodename, '^regex$')]`
-**starts-with():** `nodename[starts-with(nodename, 'string')]`
-**ends-with():** `nodename[ends-with(nodename, 'string')]`
+- **is null:** `nodename[is null]`
+- **is not null:** `nodename[is not null]`
+- **exists():** `nodename[exists(nodename)]`
+- **matches():** `nodename[matches(nodename, '^regex$')]`
+- **starts-with():** `nodename[starts-with(nodename, 'string')]`
+- **ends-with():** `nodename[ends-with(nodename, 'string')]`
 
 Array-based queries:
 
-**in:** `nodename[x in (1,2,"foo","bar")]`
-**has:** `nodename[has "foo"]`
-**empty:** `nodename[emptyarray is empty]`
-**not empty:** `nodename[emptyarray is not empty]`
+- **in:** `nodename[x in (1,2,"foo","bar")]`
+- **has:** `nodename[has "foo"]`
+- **empty:** `nodename[emptyarray is empty]`
+- **not empty:** `nodename[emptyarray is not empty]`
 
 For more examples please see the unit tests.
